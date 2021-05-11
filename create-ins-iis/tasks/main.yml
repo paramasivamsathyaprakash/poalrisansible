@@ -1,0 +1,25 @@
+---
+- name: Install IIS Web-Server with sub features and management tools
+  ansible.windows.win_feature:
+    name: Web-Server
+    state: present
+    include_sub_features: yes
+    include_management_tools: yes
+  register: win_feature
+- name: test IIS site
+  community.windows.win_iis_website:
+    name: Acme
+    state: started
+    port: 80
+    ip: 18.206.174.87
+    hostname: acme.local
+    application_pool: acme
+    physical_path: C:\tmp
+    parameters: logfile.directory:C:\tmp
+  register: website
+
+  
+- name: Remove Default Web Site
+  community.windows.win_iis_website:
+    name: "Default Web Site"
+    state: absent
